@@ -1,0 +1,13 @@
+{% extends "admin/base.html" %}
+
+{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | Daftar Admin{% endblock %}
+
+{% block branding %}
+<div id="site-name"><a href="{% url 'admin:index' %}">Daftar Admin</a></div>
+{% endblock %}
+
+{% block nav-global %}
+  <a href="{% url 'admin:platform_dashboard' %}" style="color:#fff;font-weight:700;margin-inline-end:18px;text-decoration:none;">
+    Dashboard
+  </a>
+{% endblock %}

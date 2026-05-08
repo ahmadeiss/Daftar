@@ -1,0 +1,424 @@
+{% extends "admin/base_site.html" %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+  .daftar-dashboard {
+    --palm: #0f766e;
+    --ink: #1f2937;
+    --muted: #64748b;
+    --line: #e2e8f0;
+    --paper: #f8faf9;
+    color: var(--ink);
+  }
+
+  .daftar-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  .daftar-title {
+    margin: 0;
+    font-size: 28px;
+    line-height: 1.15;
+    font-weight: 800;
+  }
+
+  .daftar-subtitle {
+    margin-top: 6px;
+    color: var(--muted);
+    font-weight: 600;
+  }
+
+  .daftar-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .daftar-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 38px;
+    border-radius: 8px;
+    padding: 8px 12px;
+    background: var(--palm);
+    color: #fff !important;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .daftar-btn.secondary {
+    background: #fff;
+    border: 1px solid var(--line);
+    color: var(--ink) !important;
+  }
+
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+
+  .stat-card,
+  .panel {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+  }
+
+  .stat-card {
+    padding: 16px;
+  }
+
+  .stat-label {
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .stat-value {
+    margin-top: 8px;
+    font-size: 26px;
+    line-height: 1;
+    font-weight: 850;
+  }
+
+  .stat-note {
+    margin-top: 8px;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .panel-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+
+  .panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    border-bottom: 1px solid var(--line);
+    padding: 14px 16px;
+    font-size: 16px;
+    font-weight: 800;
+  }
+
+  .panel-body {
+    padding: 0;
+  }
+
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .data-table th,
+  .data-table td {
+    border-bottom: 1px solid #eef2f7;
+    padding: 12px 14px;
+    text-align: start;
+    vertical-align: middle;
+  }
+
+  .data-table th {
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+
+  .data-table tr:last-child td {
+    border-bottom: 0;
+  }
+
+  .merchant-name {
+    font-weight: 800;
+  }
+
+  .merchant-meta {
+    margin-top: 3px;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 650;
+  }
+
+  .badge {
+    display: inline-flex;
+    min-width: 72px;
+    justify-content: center;
+    border-radius: 999px;
+    border: 1px solid #cbd5e1;
+    padding: 4px 9px;
+    font-size: 12px;
+    font-weight: 800;
+  }
+
+  .badge.paid {
+    border-color: #a7f3d0;
+    background: #ecfdf5;
+    color: #047857;
+  }
+
+  .badge.trial {
+    border-color: #bfdbfe;
+    background: #eff6ff;
+    color: #1d4ed8;
+  }
+
+  .badge.overdue {
+    border-color: #fecaca;
+    background: #fef2f2;
+    color: #b91c1c;
+  }
+
+  .badge.suspended {
+    border-color: #cbd5e1;
+    background: #f8fafc;
+    color: #475569;
+  }
+
+  .empty {
+    padding: 18px;
+    color: var(--muted);
+    font-weight: 700;
+  }
+
+  @media (max-width: 1080px) {
+    .stat-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .panel-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .daftar-header {
+      display: block;
+    }
+
+    .daftar-actions {
+      margin-top: 14px;
+    }
+
+    .stat-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .data-table {
+      min-width: 720px;
+    }
+
+    .panel-body {
+      overflow-x: auto;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="daftar-dashboard">
+  <div class="daftar-header">
+    <div>
+      <h1 class="daftar-title">Daftar Platform Dashboard</h1>
+      <div class="daftar-subtitle">Monitor merchant plans, subscription payments, renewals, and overdue stores.</div>
+    </div>
+    <div class="daftar-actions">
+      <a class="daftar-btn" href="{% url 'admin:accounts_merchantprofile_add' %}">Add merchant</a>
+      <a class="daftar-btn secondary" href="{% url 'admin:accounts_subscriptionpayment_add' %}">Record payment</a>
+      <a class="daftar-btn secondary" href="{% url 'admin:accounts_subscriptionplan_changelist' %}">Plans</a>
+    </div>
+  </div>
+
+  <section class="stat-grid">
+    <div class="stat-card">
+      <div class="stat-label">Monthly revenue</div>
+      <div class="stat-value">{{ stats.revenue_this_month|floatformat:2 }} ILS</div>
+      <div class="stat-note">Paid this month</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Paid merchants</div>
+      <div class="stat-value">{{ stats.paid_merchants }}</div>
+      <div class="stat-note">Active and not expired</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Need payment</div>
+      <div class="stat-value">{{ stats.overdue_merchants }}</div>
+      <div class="stat-note">Expired or past due</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Trial stores</div>
+      <div class="stat-value">{{ stats.trial_merchants }}</div>
+      <div class="stat-note">Not paid yet</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Suspended</div>
+      <div class="stat-value">{{ stats.suspended_merchants }}</div>
+      <div class="stat-note">Disabled access</div>
+    </div>
+  </section>
+
+  <section class="panel-grid">
+    <div class="panel">
+      <div class="panel-header">
+        <span>Merchants needing payment</span>
+        <a href="{% url 'admin:accounts_merchantprofile_changelist' %}?subscription_status__exact=past_due">View all</a>
+      </div>
+      <div class="panel-body">
+        {% if needs_payment %}
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Store</th>
+                <th>Plan</th>
+                <th>Status</th>
+                <th>Expired</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for merchant in needs_payment %}
+                <tr>
+                  <td>
+                    <div class="merchant-name">{{ merchant.store_name }}</div>
+                    <div class="merchant-meta">{{ merchant.email }}{% if merchant.phone %} · {{ merchant.phone }}{% endif %}</div>
+                  </td>
+                  <td>{% if merchant.plan %}{{ merchant.plan.name }}{% else %}-{% endif %}</td>
+                  <td><span class="badge {{ merchant.billing_state }}">{{ merchant.billing_state }}</span></td>
+                  <td>{% if merchant.subscription_expires_at %}{{ merchant.subscription_expires_at }}{% else %}-{% endif %}</td>
+                  <td><a href="{% url 'admin:accounts_subscriptionpayment_add' %}?merchant={{ merchant.id }}">Record payment</a></td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        {% else %}
+          <div class="empty">No overdue merchants right now.</div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">
+        <span>Renewals in 7 days</span>
+        <a href="{% url 'admin:accounts_merchantprofile_changelist' %}">Merchants</a>
+      </div>
+      <div class="panel-body">
+        {% if renewals_soon %}
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Store</th>
+                <th>Plan</th>
+                <th>Ends</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for merchant in renewals_soon %}
+                <tr>
+                  <td>
+                    <div class="merchant-name">{{ merchant.store_name }}</div>
+                    <div class="merchant-meta">{{ merchant.email }}</div>
+                  </td>
+                  <td>{% if merchant.plan %}{{ merchant.plan.name }}{% else %}-{% endif %}</td>
+                  <td>{{ merchant.subscription_expires_at }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        {% else %}
+          <div class="empty">No renewals due this week.</div>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+
+  <section class="panel-grid">
+    <div class="panel">
+      <div class="panel-header">
+        <span>Recent subscription payments</span>
+        <a href="{% url 'admin:accounts_subscriptionpayment_changelist' %}">All payments</a>
+      </div>
+      <div class="panel-body">
+        {% if recent_payments %}
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Store</th>
+                <th>Plan</th>
+                <th>Amount</th>
+                <th>Paid on</th>
+                <th>Period</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for payment in recent_payments %}
+                <tr>
+                  <td>
+                    <div class="merchant-name">{{ payment.merchant.store_name }}</div>
+                    <div class="merchant-meta">{{ payment.merchant.email }}</div>
+                  </td>
+                  <td>{% if payment.plan %}{{ payment.plan.name }}{% else %}-{% endif %}</td>
+                  <td>{{ payment.amount|floatformat:2 }} {{ payment.currency }}</td>
+                  <td>{{ payment.paid_on }}</td>
+                  <td>{{ payment.period_start }} to {{ payment.period_end }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        {% else %}
+          <div class="empty">No subscription payments yet.</div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">
+        <span>Plans</span>
+        <a href="{% url 'admin:accounts_subscriptionplan_add' %}">Add plan</a>
+      </div>
+      <div class="panel-body">
+        {% if plan_rows %}
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Plan</th>
+                <th>Price</th>
+                <th>Stores</th>
+                <th>Payments</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for plan in plan_rows %}
+                <tr>
+                  <td>
+                    <div class="merchant-name">{{ plan.name }}</div>
+                    <div class="merchant-meta">{{ plan.billing_cycle }}</div>
+                  </td>
+                  <td>{{ plan.price|floatformat:2 }} {{ plan.currency }}</td>
+                  <td>{{ plan.merchants_count }}</td>
+                  <td>{{ plan.paid_count }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        {% else %}
+          <div class="empty">No plans created yet.</div>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+</div>
+{% endblock %}
