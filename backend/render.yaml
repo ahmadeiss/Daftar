@@ -6,7 +6,7 @@ services:
     rootDir: backend
     buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput
     preDeployCommand: python manage.py migrate
-    startCommand: bash start.sh
+    startCommand: python run.py
     envVars:
       - key: SECRET_KEY
         generateValue: true
