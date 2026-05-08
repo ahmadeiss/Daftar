@@ -72,6 +72,8 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 database_url = os.getenv("DATABASE_URL")
 if database_url:
+    # Remove channel_binding if present (can cause issues with poolers)
+    database_url = database_url.replace("channel_binding=require", "").replace("&&", "&").rstrip("&")
     DATABASES = {
         "default": dj_database_url.parse(database_url, conn_max_age=600, ssl_require=True)
     }
