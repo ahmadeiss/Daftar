@@ -50,7 +50,6 @@ export default function LoginPage() {
           </div>
           <div>
             <h1 className="text-2xl font-black text-ink">{t("appName")}</h1>
-            <p className="text-sm font-semibold text-slate-500">{t("demoHint")}</p>
           </div>
         </div>
 
