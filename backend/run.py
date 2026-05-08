@@ -26,8 +26,5 @@ subprocess.run(
     cwd=BASE_DIR,
 )
 
-print("Seeding demo data...", flush=True)
-subprocess.run([sys.executable, "manage.py", "seed_demo"], cwd=BASE_DIR)
-
 print("=== Starting gunicorn ===", flush=True)
 os.execvp("gunicorn", ["gunicorn", "config.wsgi:application", "--access-logfile", "-", "--error-logfile", "-"])
